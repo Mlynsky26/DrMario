@@ -16,9 +16,29 @@ export default class Game {
             { red: 80, green: 0, blue: 0 },
             { red: 0, green: 0, blue: 80 },
         ]
-        this.level = 1
         this.backgroundScale = 10
         this.pillId = 0
+        this.backGroundImage = Images.getImage("background")
+        this.reset(1)
+        console.log(this)
+        Keyboard.init()
+        Keyboard.addListener(key => {
+            if (this.state == "gameover" && key == "Enter") {
+                this.reset(1)
+                console.log(this)
+            } else if (this.state == "nextlevel" && key == "Enter") {
+                this.level++
+                this.reset(this.level)
+                console.log(this)
+            }
+            if (this.state == "level")
+                this.currentPill.updateKey(key)
+        })
+
+    }
+
+    reset(level) {
+        this.level = level
         this.gameObjects = []
         this.board = new Board(this)
         this.currentPill = new Pill(this)
@@ -31,19 +51,10 @@ export default class Game {
         this.nextPill.tiles[0].y = -2
         this.nextPill.tiles[1].y = -2
         this.gameObjects.push(this.nextPill)
-        this.backGroundImage = Images.getImage("background")
-        this.pause = false
+        this.state = "level"
         this.points = 0
-        Keyboard.init()
-        Keyboard.addListener(key => {
-            if (key == "Enter" && this.pause) {
-                console.log("saasa")
-            }
-            if (!this.pause)
-                this.currentPill.updateKey(key)
-        })
-
     }
+
 
     addPoints() {
         this.points += 100
@@ -54,13 +65,13 @@ export default class Game {
         this.currentPill = new GameObject()
         this.nextPill = new GameObject()
         this.gameObjects.push(new Alert(this, 0))
-        this.pause = true
+        this.state = "gameover"
     }
     stageCleared() {
         this.currentPill = new GameObject()
         this.nextPill = new GameObject()
         this.gameObjects.push(new Alert(this, 1))
-        this.pause = true
+        this.state = "nextlevel"
     }
 
     drawBackground() {
