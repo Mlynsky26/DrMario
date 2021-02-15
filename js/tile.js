@@ -32,6 +32,12 @@ export default class Tile extends GameObject {
             case "single": {
                 sx = 8
                 sy = 8
+                break
+            }
+            case "deleted": {
+                sx = 16
+                sy = 8
+                break
             }
         }
         ctx.drawImage(this.image, sx, sy, 8, 8, this.x * 8 + this.offset.x, this.y * 8 + this.offset.y, 8, 8)

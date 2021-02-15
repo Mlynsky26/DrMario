@@ -13,6 +13,8 @@ export default class Board {
         this.viruses = this.generateViruses(this.game.level)
         this.lastFall = 0
         this.canFall = false
+        this.speed = 20
+        this.toDelete = []
 
     }
 
@@ -62,15 +64,16 @@ export default class Board {
     }
 
     update(timestamp) {
-        if (timestamp - this.lastFall > 100) {
-            //console.log(this)
+        if (timestamp - this.lastFall > this.speed) {
+            this.speed = 20
+            this.deleteFours()
             this.fallDown()
             this.lastFall = timestamp
         }
-        // if (!this.canFall) {
-        this.clearFours()
-        //   this.canFall = true
-        //}
+        if (!this.canFall) {
+            this.clearFours()
+            this.canFall = true
+        }
     }
 
     findPair(tile1) {
@@ -90,35 +93,42 @@ export default class Board {
         if (this.viruses.length == 0) {
             this.game.stageCleared()
         }
-        console.log(this.viruses)
     }
+    deleteFours() {
+        if (this.toDelete.length == 0) return
 
-    clearFours() {
-        let toClear = this.checkFours()
-
-        if (toClear.length > 0)
-            console.log(toClear)
-
-        for (let i = 0; i < toClear.length; i++) {
-            let element = toClear[i]
+        for (let i = 0; i < this.toDelete.length; i++) {
+            let element = this.toDelete[i]
             let index = this.game.gameObjects.findIndex(e => e.x == element.x && e.y == element.y)
             if (index != -1) {
                 this.game.gameObjects.splice(index, 1)
             }
+            this.grid[element.x][element.y] = 0
+            if (element instanceof Virus) {
+                this.game.addPoints()
+                this.removeVirus(element)
+            }
+        }
+        this.toDelete = []
+    }
 
-            console.log("element1")
-            console.log(element)
+    clearFours() {
+        let toClear = this.checkFours()
+        if (toClear.length != 0) {
+            this.speed = 250
+            this.toDelete = toClear
+        }
+
+        for (let i = 0; i < toClear.length; i++) {
+            let element = toClear[i]
+
             if (element instanceof Tile && !element.single) {
                 let pairCoords = this.findPair(element)
                 this.grid[pairCoords.x][pairCoords.y].single = true
                 this.grid[pairCoords.x][pairCoords.y].type = "single"
-            } else if (element instanceof Virus) {
-                this.game.addPoints()
-                this.removeVirus(element)
             }
-            this.grid[element.x][element.y] = 0
+            this.grid[element.x][element.y].type = "deleted"
         }
-
     }
 
     checkFours() {
@@ -138,8 +148,6 @@ export default class Board {
 
                     }
                 }
-
-
                 //horizontal
                 if (x < 5) {
                     if (this.grid[x][y] != 0 && this.grid[x + 1][y] != 0 && this.grid[x + 2][y] != 0 && this.grid[x + 3][y] != 0) {
@@ -156,12 +164,12 @@ export default class Board {
             }
         }
         coords = [...new Set(coords)]
-
         return coords
     }
 
     fallDown() {
         let checked = []
+        let fallen = false
         for (let x = 0; x < this.grid.length; x++) {
             for (let y = this.grid[x].length - 2; y >= 0; y--) {
                 if (this.grid[x][y] == 0 || this.grid[x][y] instanceof Virus) {
@@ -172,6 +180,7 @@ export default class Board {
                             this.grid[x][y].y++
                             this.grid[x][y + 1] = this.grid[x][y]
                             this.grid[x][y] = 0
+                            fallen = true
                         }
                     } else {
                         if (!checked.includes(this.grid[x][y].id)) {
@@ -184,6 +193,7 @@ export default class Board {
                                     this.grid[x][y + 1] = this.grid[x][y]
                                     this.grid[x][y] = this.grid[x][y - 1]
                                     this.grid[x][y - 1] = 0
+                                    fallen = true
                                 }
                             } else {
                                 if (this.grid[x][y + 1] == 0 && this.grid[x + 1][y + 1] == 0) {
@@ -193,11 +203,17 @@ export default class Board {
                                     this.grid[x + 1][y + 1] = this.grid[x + 1][y]
                                     this.grid[x][y] = 0
                                     this.grid[x + 1][y] = 0
+                                    fallen = true
                                 }
                             }
                         }
                     }
                 }
+            }
+            if (!fallen) {
+                this.canFall = false
+            } else {
+                this.canFall = true
             }
         }
     }

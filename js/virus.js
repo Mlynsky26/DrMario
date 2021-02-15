@@ -46,5 +46,4 @@ export default class Virus extends GameObject {
             this.animationFrame = 4
         }
     }
-
 }
