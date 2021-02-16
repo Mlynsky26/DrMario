@@ -11,6 +11,11 @@ async function main() {
     canvas.style.imageRendering = 'pixelated'
     const ctx = canvas.getContext("2d")
 
+    let score = localStorage.getItem("topScore")
+    if (score <= 0) {
+        score = 0
+        localStorage.setItem("topScore", score)
+    }
     const game = new Game(canvas.height, canvas.width, ctx)
     function gameLoop(timestamp) {
         game.drawBackground()

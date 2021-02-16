@@ -78,12 +78,6 @@ export default class Game {
             this.gameObjects.push(this.topScore)
         }
         this.state = "level"
-
-        let score = localStorage.getItem("topScore")
-        if (score <= 0) {
-            score = 0
-            localStorage.setItem("topScore", score)
-        }
     }
 
 
