@@ -183,30 +183,7 @@ export default class Pill extends GameObject {
 
         }
 
-
-        this.game.gameObjects = this.game.gameObjects.filter(value => value != this.game.nextPill)
-
-
-        if (this.game.board.grid[3][0] != 0 || this.game.board.grid[4][0] != 0) {
-            this.game.gameOver()
-        } else {
-            this.game.currentPill = this.game.nextPill
-            this.game.currentPill.x = 3
-            this.game.currentPill.tiles[0].x = 4
-            this.game.currentPill.tiles[1].x = 3
-            this.game.currentPill.y = -1
-            this.game.currentPill.tiles[0].y = -1
-            this.game.currentPill.tiles[1].y = -1
-            this.game.currentPill.current = true
-            this.game.nextPill = new Pill(this.game)
-            this.game.nextPill.x = 10
-            this.game.nextPill.tiles[0].x = 14
-            this.game.nextPill.tiles[1].x = 13
-            this.game.nextPill.y = -2
-            this.game.nextPill.tiles[0].y = -2
-            this.game.nextPill.tiles[1].y = -2
-            this.game.gameObjects.push(this.game.nextPill)
-        }
+        this.game.canAddPill = true
 
     }
 

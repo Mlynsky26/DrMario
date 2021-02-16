@@ -20,7 +20,17 @@ export default class Images {
         'pill-yellow',
         "background",
         "sc",
-        "go"
+        "go",
+        "numbers/0",
+        "numbers/1",
+        "numbers/2",
+        "numbers/3",
+        "numbers/4",
+        "numbers/5",
+        "numbers/6",
+        "numbers/7",
+        "numbers/8",
+        "numbers/9",
     ]
 
     static async loadImages() {
@@ -29,7 +39,7 @@ export default class Images {
                 Images.array.map(name => {
                     return new Promise((resolve, reject) => {
                         let newImage = new Image
-                        newImage.src = `/images/${name}.png`
+                        newImage.src = `images/${name}.png`
                         newImage.addEventListener('load', () => {
                             resolve([name, newImage])
                         })
