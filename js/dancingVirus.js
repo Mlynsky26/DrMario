@@ -19,6 +19,7 @@ export default class DancingVirus extends GameObject {
         this.rotateSpeed = 1000
         this.animationSpeed = 1000
         this.animationFrame = 1
+        this.deleteTime = 0
     }
 
     rotate() {
@@ -35,7 +36,7 @@ export default class DancingVirus extends GameObject {
             this.lastRotate = timestamp
         }
 
-        if (this.game.state == "level") {
+        if (this.game.state == "level" && this.deleteTime == 0) {
             if (timestamp % this.animationSpeed < this.animationSpeed / 4) {
                 this.animationFrame = 1
             } else if (timestamp % this.animationSpeed < this.animationSpeed / 4 * 2) {
@@ -45,13 +46,16 @@ export default class DancingVirus extends GameObject {
             } else {
                 this.animationFrame = 4
             }
-        } else {
+        } else if (this.game.state == "gameover") {
             if (timestamp % this.animationSpeed < this.animationSpeed / 2) {
                 this.animationFrame = 1
             } else {
                 this.animationFrame = 5
             }
-
+        } else {
+            if (new Date().getTime() - this.deleteTime > 1000) {
+                this.game.gameObjects = this.game.gameObjects.filter(element => element != this)
+            }
         }
     }
     draw(ctx) {
@@ -74,6 +78,10 @@ export default class DancingVirus extends GameObject {
             }
             case 5: {
                 ctx.drawImage(this.image, 0, 24, 32, 24, this.x - 20, this.y - 8, 32, 24)
+                break
+            }
+            case 6: {
+                ctx.drawImage(this.image, 32, 24, 32, 24, this.x - 20, this.y - 8, 32, 24)
                 break
             }
         }

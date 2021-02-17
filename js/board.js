@@ -104,9 +104,6 @@ export default class Board {
         this.virusNumber.number--
         this.virusNumber.setPrecision()
 
-        console.log("removed")
-        console.log(element)
-        console.log(this.virusesCount)
         switch (element.color) {
             case "blue": {
                 this.virusesCount[0]--
@@ -121,25 +118,24 @@ export default class Board {
                 break
             }
         }
-        console.log(this.virusesCount)
-
-
 
 
         for (let i = 0; i < 3; i++) {
             if (this.virusesCount[i] == 0) {
-                console.log(element)
-                this.game.dancingViruses[i] = 0
-                this.game.gameObjects = this.game.gameObjects.filter(value => {
-                    if (!(value instanceof DancingVirus)) return true
-                    if (value.color != this.colors[i]) return true
+                //console.log(element)
+                this.game.dancingViruses[i].animationFrame = 6
+                this.game.dancingViruses[i].deleteTime = new Date().getTime()
+                console.log(this.game.dancingViruses[i])
 
-                    return false
-                })
+                // this.game.gameObjects = this.game.gameObjects.filter(value => {
+                //     if (!(value instanceof DancingVirus)) return true
+                //     if (value.color != this.colors[i]) return true
+
+                //     return false
+                // })
             }
         }
 
-        console.log(this.viruses)
         if (this.viruses.length == 0) {
             this.game.stageCleared()
         }
@@ -147,7 +143,7 @@ export default class Board {
     deleteFours() {
         if (this.toDelete.length == 0) return
 
-        const deletedElements = []
+        let deletedElements = []
         this.game.gameObjects = this.game.gameObjects.filter(element => {
             if (element.type == "deleted") {
                 this.grid[element.x][element.y] = 0
@@ -193,6 +189,8 @@ export default class Board {
                 let pairCoords = this.findPair(element)
                 this.grid[pairCoords.x][pairCoords.y].single = true
                 this.grid[pairCoords.x][pairCoords.y].type = "single"
+            } else if (element instanceof Virus) {
+                element.animationFrame = 5
             }
             this.grid[element.x][element.y].type = "deleted"
         }

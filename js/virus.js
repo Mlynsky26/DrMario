@@ -32,18 +32,24 @@ export default class Virus extends GameObject {
                 ctx.restore()
                 break
             }
+            case 5: {
+                ctx.drawImage(this.image, 16, 0, 8, 8, this.x * 8 + this.offset.x, this.y * 8 + this.offset.y, 8, 8)
+                break
+            }
         }
     }
 
     update(timestamp) {
-        if (timestamp % this.animationSpeed < this.animationSpeed / 4) {
-            this.animationFrame = 1
-        } else if (timestamp % this.animationSpeed < this.animationSpeed / 4 * 2) {
-            this.animationFrame = 2
-        } else if (timestamp % this.animationSpeed < this.animationSpeed / 4 * 3) {
-            this.animationFrame = 1
-        } else {
-            this.animationFrame = 4
+        if (this.animationFrame < 5) {
+            if (timestamp % this.animationSpeed < this.animationSpeed / 4) {
+                this.animationFrame = 1
+            } else if (timestamp % this.animationSpeed < this.animationSpeed / 4 * 2) {
+                this.animationFrame = 2
+            } else if (timestamp % this.animationSpeed < this.animationSpeed / 4 * 3) {
+                this.animationFrame = 1
+            } else {
+                this.animationFrame = 4
+            }
         }
     }
 }
