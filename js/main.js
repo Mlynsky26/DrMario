@@ -12,9 +12,8 @@ async function main() {
     const ctx = canvas.getContext("2d")
 
     let score = localStorage.getItem("topScore")
-    if (score <= 0) {
-        score = 0
-        localStorage.setItem("topScore", score)
+    if (score == null) {
+        localStorage.setItem("topScore", 0)
     }
     const game = new Game(canvas.height, canvas.width, ctx)
     function gameLoop(timestamp) {

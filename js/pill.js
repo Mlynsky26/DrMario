@@ -158,6 +158,7 @@ export default class Pill extends GameObject {
     }
 
     setOnBoard() {
+        console.log("setOnBoard")
         this.game.gameObjects.push(this.tiles[0])
         this.game.gameObjects.push(this.tiles[1])
 
@@ -188,7 +189,7 @@ export default class Pill extends GameObject {
     }
 
     moveDown(timestamp) {
-        if (!this.canMoveDown()) {
+        if (!this.canMoveDown() && !this.game.canAddPill) {
             this.setOnBoard()
         }
         if (this.canMoveDown()) {

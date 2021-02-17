@@ -38,8 +38,7 @@ export default class Board {
 
     generateViruses(level) {
         let viruses = []
-        for (let i = 0; i < 4 + level; i++) {
-
+        for (let i = 0; i < 4 * (level + 1); i++) {
             let virus = new Virus(this.game, this.colors[i % 3])
             if (this.grid[virus.x][virus.y] != 0) {
                 i--
@@ -122,17 +121,8 @@ export default class Board {
 
         for (let i = 0; i < 3; i++) {
             if (this.virusesCount[i] == 0) {
-                //console.log(element)
                 this.game.dancingViruses[i].animationFrame = 6
                 this.game.dancingViruses[i].deleteTime = new Date().getTime()
-                console.log(this.game.dancingViruses[i])
-
-                // this.game.gameObjects = this.game.gameObjects.filter(value => {
-                //     if (!(value instanceof DancingVirus)) return true
-                //     if (value.color != this.colors[i]) return true
-
-                //     return false
-                // })
             }
         }
 
@@ -158,20 +148,7 @@ export default class Board {
                 this.removeVirus(element)
             }
         })
-
-        // for (let i = 0; i < this.toDelete.length; i++) {
-        //     let element = this.toDelete[i]
-        //     let index = this.game.gameObjects.findIndex(e => e.x == element.x && e.y == element.y)
-        //     if (index != -1) {
-        //         th
-        //         is.game.gameObjects.splice(index, 1)
-        //     }
-        //     this.grid[element.x][element.y] = 0
-        //     if (element instanceof Virus) {
-        //         this.game.addPoints()
-        //         this.removeVirus(element)
-        //     }
-        // }
+        console.log(this.game.gameObjects)
         this.toDelete = []
     }
 
@@ -184,7 +161,7 @@ export default class Board {
 
         for (let i = 0; i < toClear.length; i++) {
             let element = toClear[i]
-
+            //if (this.grid[element.x][element.y]) {
             if (element instanceof Tile && !element.single) {
                 let pairCoords = this.findPair(element)
                 this.grid[pairCoords.x][pairCoords.y].single = true
@@ -192,7 +169,9 @@ export default class Board {
             } else if (element instanceof Virus) {
                 element.animationFrame = 5
             }
-            this.grid[element.x][element.y].type = "deleted"
+            element.type = "deleted"
+            //}
+
         }
     }
 
@@ -260,8 +239,9 @@ export default class Board {
                                     this.grid[x][y - 1] = 0
                                     fallen = true
                                 }
-                            } else {
+                            } else if (this.grid[x][y].type == "right" || this.grid[x][y].type == "left") {
                                 if (this.grid[x][y + 1] == 0 && this.grid[x + 1][y + 1] == 0) {
+                                    console.log(this.grid[x + 1][y])
                                     this.grid[x][y].y++
                                     this.grid[x + 1][y].y++
                                     this.grid[x][y + 1] = this.grid[x][y]
@@ -277,9 +257,18 @@ export default class Board {
             }
             let toClear = this.checkFours()
             if (!fallen && toClear.length == 0 && this.game.canAddPill) {
+                console.log("fallen")
                 this.game.canAddPill = false
                 this.game.gameObjects = this.game.gameObjects.filter(value => value != this.game.nextPill)
-
+                for (let x = 0; x < this.game.board.grid.length; x++) {
+                    for (let y = 0; y < this.game.board.grid[x].length; y++) {
+                        let element = this.game.board.grid[x][y]
+                        if (element && element instanceof Tile) {
+                            element.x = x
+                            element.y = y
+                        }
+                    }
+                }
 
                 if (this.game.board.grid[3][0] != 0 || this.game.board.grid[4][0] != 0) {
                     this.game.gameOver()
