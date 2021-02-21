@@ -21,7 +21,7 @@ export default class Game {
         ]
         this.backgroundScale = 10
         this.pillId = 0
-        this.backGroundImage = Images.getImage("background")
+
         this.reset(new Numbers(2, 0, { x: 35, y: 15 }), new Numbers(7, 0, { x: 5, y: 8 }))
         Keyboard.init()
         Keyboard.addListener(key => {
@@ -41,6 +41,10 @@ export default class Game {
     reset(level, points) {
         this.gameObjects = []
         this.level = level
+
+        this.backGroundImage = Images.getImage("background")
+        this.setBackgroundColor(this.colors[this.level.number % 3])
+
         this.gameObjects.push(this.level)
         this.points = points
         this.gameObjects.push(this.points)
@@ -102,6 +106,11 @@ export default class Game {
         this.nextPill = new GameObject()
         this.gameObjects.push(new Alert(this, 1))
         this.state = "nextlevel"
+    }
+
+    setBackgroundColor(color) {
+        console.log(color)
+        console.log(this.backGroundImage)
     }
 
     drawBackground() {

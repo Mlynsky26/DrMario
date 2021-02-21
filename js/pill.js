@@ -158,7 +158,6 @@ export default class Pill extends GameObject {
     }
 
     setOnBoard() {
-        console.log("setOnBoard")
         this.game.gameObjects.push(this.tiles[0])
         this.game.gameObjects.push(this.tiles[1])
 
